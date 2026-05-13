@@ -1,17 +1,17 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
-from typing import TypedDict
+from typing import TypedDict, Annotated
 
 load_dotenv()
 chatLLM = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=1.6)
 
 # Decide the schema - how you want the result to be.
 class reviewSummary(TypedDict) :
-    brand:str
-    model:str
-    recommended:bool
+    brand:Annotated[str, 'name of the brand']
+    model:Annotated[str, 'name of the model from that brand']
+    recommended:Annotated[str, 'is it recommeded or no - Only answer with Yes or No with % confidence, Not True/false.']
     sentiment:str
-    battery_backup:int
+    battery_backup:Annotated[str,'How many hours,days does the model run on a single charge.']
 
 # call the with_structured_output with class.
 new_summary = chatLLM.with_structured_output(reviewSummary)
@@ -32,3 +32,4 @@ So, should you buy it? I’d say yes if your priorities are battery life, displa
 """
 result = new_summary.invoke(prompt)
 print(result)
+
