@@ -1,6 +1,6 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
-from typing import TypedDict, Annotated
+from typing import TypedDict, Annotated, Optional
 
 load_dotenv()
 chatLLM = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=1.6)
@@ -12,6 +12,9 @@ class reviewSummary(TypedDict) :
     recommended:Annotated[str, 'is it recommeded or no - Only answer with Yes or No with % confidence, Not True/false.']
     sentiment:str
     battery_backup:Annotated[str,'How many hours,days does the model run on a single charge.']
+    key_themes:Annotated[list[str], 'List down all the key themes.']
+    pros:Annotated[Optional[list[str]], 'list down all the pros of the model & chosing this model']
+    cons:Annotated[Optional[list[str]], 'list down all the cons of the model & chosing this model']
 
 # call the with_structured_output with class.
 new_summary = chatLLM.with_structured_output(reviewSummary)
@@ -31,5 +34,7 @@ Build quality feels premium thanks to the metal frame and glass back, and the IP
 So, should you buy it? I’d say yes if your priorities are battery life, display quality, and performance. It’s especially good for students, casual gamers, and people who consume a lot of media. But if camera quality is your top priority, especially night photography, there are better options available.
 """
 result = new_summary.invoke(prompt)
-print(result)
+print('Pros--------',result['pros'])
+print('cons',result['cons'])
+print('key_themes',result['key_themes'])
 
